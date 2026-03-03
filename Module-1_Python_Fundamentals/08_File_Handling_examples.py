@@ -1,55 +1,61 @@
-# 08_File_Handling_examples.py
-
 """
-Step-by-step guide to Python File Handling.
-Demonstrates context managers, efficient reading, and JSON serialization.
+Topic 8: File Handling Examples
+Description: Practical examples for reading, writing, and managing files correctly.
 """
-
+import os
 import json
-from pathlib import Path
 
-# 1. Writing to a file (Standard Text)
-print("--- Writing Data ---")
-lines_to_write = [
-    "Expert Topic: File Handling\n",
-    "Rule #1: Always use context managers.\n",
-    "Rule #2: Specify encoding='utf-8'.\n"
-]
+# --- Example 1: Writing and Reading a Text File ---
+print("--- Example 1: Basic Text Files ---")
+filename = "example.txt"
 
-with open("expert_log.txt", "w", encoding="utf-8") as file:
-    file.writelines(lines_to_write)
-print("Data written to expert_log.txt")
+# Step 1: Write to the file (Overwrites if exists)
+with open(filename, "w", encoding="utf-8") as f:
+    f.write("Line 1: Hello Python!\n")
+    f.write("Line 2: File handling is fun.\n")
 
-# 2. Efficient Reading (Line-by-line)
-print("\n--- Reading Data (Efficiently) ---")
-if Path("expert_log.txt").exists():
-    with open("expert_log.txt", "r", encoding="utf-8") as file:
-        # Iterating over the file object is memory-efficient for large files
-        for i, line in enumerate(file, start=1):
-            print(f"L{i}: {line.strip()}")
+# Step 2: Read from the file
+with open(filename, "r", encoding="utf-8") as f:
+    content = f.read()
+    print("Full Content read at once:")
+    print(content)
 
-# 3. JSON Handling (Modern Standards)
-print("\n--- JSON Serialization ---")
-user_profile = {
-    "username": "sriram_dev",
-    "skills": ["Python", "Django", "Data Science"],
-    "active": True
+# --- Example 2: Appending Data ---
+print("\n--- Example 2: Appending Data ---")
+with open(filename, "a", encoding="utf-8") as f:
+    f.write("Line 3: This was added later using 'a' mode.\n")
+
+# Read line by line (Memory efficient)
+print("Reading line by line using a loop:")
+with open(filename, "r", encoding="utf-8") as f:
+    for line in f:
+        print(f" > {line.strip()}")
+
+# --- Example 3: Handling JSON Data ---
+print("\n--- Example 3: JSON Data (Dictionaries) ---")
+data = {
+    "module": "Python Fundamentals",
+    "lessons": ["Syntax", "Loops", "Files"],
+    "completed": True
 }
 
-# Writing JSON
-with open("profile.json", "w") as f:
-    json.dump(user_profile, f, indent=4)
-print("Profile saved to profile.json")
+# Saving JSON
+with open("data.json", "w") as json_file:
+    json.dump(data, json_file, indent=4)
+print("Data saved to data.json")
 
-# Reading JSON
-with open("profile.json", "r") as f:
-    loaded_data = json.load(f)
-    print(f"Loaded User: {loaded_data['username']}")
+# Loading JSON
+with open("data.json", "r") as json_file:
+    loaded_data = json.load(json_file)
+    print(f"Loaded Module Name: {loaded_data['module']}")
 
-# 4. Exclusive Creation (Safety Check)
-print("\n--- Safety Mode ('x') ---")
-try:
-    with open("expert_log.txt", "x") as f:
-        f.write("This will fail because the file exists.")
-except FileExistsError:
-    print("Safety Triggered: Cannot overwrite 'expert_log.txt' in 'x' mode.")
+# --- Example 4: Safety Check (Checking if path exists) ---
+print("\n--- Example 4: Safety Check ---")
+if os.path.exists("non_existent_file.txt"):
+    print("Found it!")
+else:
+    print("Warning: non_existent_file.txt does not exist. Skipping read.")
+
+# Cleanup of example files
+# os.remove(filename)
+# os.remove("data.json")

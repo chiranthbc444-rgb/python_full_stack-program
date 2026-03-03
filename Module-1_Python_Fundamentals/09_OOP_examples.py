@@ -1,87 +1,105 @@
-# 09_OOP_examples.py
+"""
+Topic 9: Object-Oriented Programming (OOP) Examples
+Description: Clear examples illustrating the 4 pillars of OOP.
+"""
+
+# --- Example 1: Class, Object, and Encapsulation ---
+print("--- Example 1: Encapsulation (Bank Account) ---")
+class BankAccount:
+    def __init__(self, owner, balance):
+        self.owner = owner
+        self.__balance = balance # Private attribute (Double underscore)
+
+    def deposit(self, amount):
+        if amount > 0:
+            self.__balance += amount
+            print(f"Deposited {amount}. New Balance: {self.__balance}")
+
+    def get_balance(self):
+        return self.__balance # Public method to see private data
+
+account = BankAccount("Sriram", 1000)
+account.deposit(500)
+print(f"Current Balance for {account.owner}: {account.get_balance()}")
+# print(account.__balance) # This would fail! It's private.
+
+
+# --- Example 2: Inheritance & Super() ---
+print("\n--- Example 2: Inheritance (Vehicles) ---")
+class Vehicle:
+    def __init__(self, brand):
+        self.brand = brand
+    
+    def start(self):
+        print(f"The {self.brand} is starting...")
+
+class ElectricCar(Vehicle): # Inherits from Vehicle
+    def __init__(self, brand, battery_size):
+        super().__init__(brand) # Calls the Parent's __init__
+        self.battery_size = battery_size
+
+    def show_specs(self):
+        print(f"Brand: {self.brand}, Battery: {self.battery_size}kWh")
+
+my_tesla = ElectricCar("Tesla", 100)
+my_tesla.start()
+my_tesla.show_specs()
+
+
+# --- Example 3: Polymorphism ---
+print("\n--- Example 3: Polymorphism (Animal Sounds) ---")
+class Animal:
+    def speak(self):
+        pass # To be defined by children
+
+class Dog(Animal):
+    def speak(self):
+        return "Woof!"
+
+class Cat(Animal):
+    def speak(self):
+        return "Meow!"
+
+animals = [Dog(), Cat(), Dog()]
+for a in animals:
+    print(a.speak()) # Same command, different results!
+
+
+# --- Example 4: Abstraction (The Template) ---
+print("\n--- Example 4: Abstraction (Remote Control) ---")
 from abc import ABC, abstractmethod
 
-"""
-Step-by-step guide to Professional OOP in Python.
-Demonstrates MRO, Decorators (@property), and Dunder Methods.
-"""
+class RemoteControl(ABC): # This class cannot be instantiated!
+    @abstractmethod
+    def toggle_power(self):
+        """Every remote MUST have a power button."""
+        pass
 
-# --- 1. Advanced Class Features (Decorators) ---
-class Employee:
-    company = "Antigravity AI"  # Class Variable
+class TVRemote(RemoteControl):
+    def toggle_power(self):
+        print("TV Power Toggled: Screen is now ON.")
 
-    def __init__(self, name, salary):
-        self.name = name
-        self.__salary = salary  # Private variable
+class FanRemote(RemoteControl):
+    def toggle_power(self):
+        print("Fan Power Toggled: Blades are now SPINNING.")
 
-    # Getter using @property
-    @property
-    def salary(self):
-        return f"${self.__salary:,}"
+# my_remote = RemoteControl() # This would throw an error!
+tv = TVRemote()
+tv.toggle_power()
 
-    # Factory method using @classmethod
-    @classmethod
-    def from_string(cls, emp_str):
-        name, salary = emp_str.split("-")
-        return cls(name, int(salary))
+fan = FanRemote()
+fan.toggle_power()
 
-    @staticmethod
-    def is_workday(day):
-        return day.weekday() < 5
 
-# --- 2. Multiple Inheritance & MRO ---
-class A:
-    def greet(self): print("Hello from A")
-
-class B(A):
-    def greet(self): print("Hello from B")
-
-class C(A):
-    def greet(self): print("Hello from C")
-
-class D(B, C):
-    pass
-
-# --- 3. Dunder Methods (Magic Methods) ---
+# --- Example 5: Magic Methods (__str__) ---
+print("\n--- Example 5: Magic Methods (__str__) ---")
 class Book:
-    def __init__(self, title, pages):
+    def __init__(self, title, author):
         self.title = title
-        self.pages = pages
+        self.author = author
 
     def __str__(self):
-        return f"'{self.title}' by Master Author"
+        return f"'{self.title}' written by {self.author}"
 
-    def __len__(self):
-        return self.pages
-
-    def __add__(self, other):
-        return self.pages + other.pages
-
-# --- Execution & Demonstration ---
-if __name__ == "__main__":
-    print("--- Decorators (@property & @classmethod) ---")
-    emp = Employee.from_string("Sriram-150000")
-    print(f"Employee: {emp.name} | Salary: {emp.salary}")
-
-    print("\n--- MRO (Multiple Inheritance) ---")
-    d_obj = D()
-    d_obj.greet()  # Calls B's greet due to MRO
-    print(f"MRO for D: {[cls.__name__ for cls in D.mro()]}")
-
-    print("\n--- Dunder Methods ---")
-    b1 = Book("Python Expert", 500)
-    b2 = Book("Clean Code", 300)
-    print(f"Book String: {b1}")
-    print(f"Total Pages (b1 + b2): {b1 + b2}")
-
-    print("\n--- Abstraction ---")
-    class Validator(ABC):
-        @abstractmethod
-        def validate(self, data): pass
-
-    class EmailValidator(Validator):
-        def validate(self, data):
-            return "@" in data
-
-    v = EmailValidator()
-    print(f"Is valid email? {v.validate('test@example.com')}")
+my_book = Book("Python Mastery", "Expert")
+print(my_book) # Uses the __str__ method automatically

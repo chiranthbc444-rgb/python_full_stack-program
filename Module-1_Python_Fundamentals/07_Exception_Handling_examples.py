@@ -1,50 +1,66 @@
-# 07_Exception_Handling_examples.py
-
 """
-Step-by-step guide to Python Exception Handling.
-Demonstrates specific exceptions, custom errors, and the 'else'/'finally' clauses.
+Topic 7: Exception Handling Examples
+Description: Concrete, runnable examples covering all possible exception handling scenarios.
 """
 
-# 1. Custom Exception Definition
-class AgeLimitError(Exception):
-    """Raised when user age is below the requirement."""
+# --- Example 1: The Basic Try-Except ---
+print("--- Example 1: Basic Handling ---")
+try:
+    number = int("abc")  # This will fail
+except ValueError:
+    print("Caught an error: You can't turn letters into numbers!")
+
+# --- Example 2: The Full Block (Try-Except-Else-Finally) ---
+print("\n--- Example 2: The Full Block ---")
+def divide_numbers(a, b):
+    try:
+        print(f"Attempting: {a} / {b}")
+        result = a / b
+    except ZeroDivisionError:
+        print("Error: You cannot divide by zero!")
+    else:
+        print(f"Success! The result is {result}")
+    finally:
+        print("Cleaning up... operation finished.")
+
+divide_numbers(10, 2)  # Normal case
+divide_numbers(10, 0)  # Error case
+
+# --- Example 3: Multiple Exception Types ---
+print("\n--- Example 3: Multiple Exceptions ---")
+try:
+    # my_list = [1, 2]
+    # print(my_list[5]) # Uncomment to trigger IndexError
+    x = 10 / 0         # Triggers ZeroDivisionError
+except IndexError:
+    print("Error: That index doesn't exist in the list.")
+except ZeroDivisionError:
+    print("Error: Don't divide by zero.")
+except Exception as e:
+    print(f"Caught a general error: {e}")
+
+# --- Example 4: Custom Exceptions ---
+print("\n--- Example 4: Custom Exceptions ---")
+
+class CoffeeTooHotError(Exception):
+    """Raised when the coffee is dangerously hot."""
     pass
 
-# 2. The Complete try-except-else-finally Block
-def register_user(age):
-    try:
-        print(f"\nAttempting to register user with age: {age}")
-        if not isinstance(age, int):
-            raise TypeError("Age must be an integer sequence of digits.")
-        if age < 18:
-            raise AgeLimitError("You must be 18+ to register.")
-    except TypeError as e:
-        print(f"Type Error: {e}")
-    except AgeLimitError as e:
-        print(f"Validation Error: {e}")
-    except Exception as e:
-        # Catch-all for unexpected issues (use sparingly)
-        print(f"Unexpected Error: {e}")
-    else:
-        # Runs ONLY if no exception was raised
-        print("Success: User registered successfully!")
-    finally:
-        # Runs NO MATTER WHAT
-        print("System: Registration attempt logged.")
+def drink_coffee(temp):
+    if temp > 80:
+        raise CoffeeTooHotError(f"Ouch! {temp}C is way too hot!")
+    print(f"Ahhh, {temp}C is just right.")
 
-# Testing the function
-register_user(25)     # Success
-register_user(16)     # Custom AgeLimitError
-register_user("25")   # TypeError
-
-# 3. Practical Resource Handling (Simulated)
-print("\n--- Resource Cleanup Example ---")
 try:
-    print("Opening connection to 'Database'...")
-    # Simulate a crash
-    x = 1 / 0
-except ZeroDivisionError:
-    print("Caught a crash during database operation!")
-finally:
-    # This is critical! Ensures the connection closes even if we crash.
-    print("Closing connection to 'Database' (Cleanup guaranteed).")
+    drink_coffee(95)
+except CoffeeTooHotError as e:
+    print(f"Safety Warning: {e}")
+
+# --- Example 5: Raising Exceptions ---
+print("\n--- Example 5: Manual Raising ---")
+age = -5
+try:
+    if age < 0:
+        raise ValueError("Age cannot be a negative number!")
+except ValueError as error:
+    print(f"Validation Error: {error}")
